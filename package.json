@@ -1,0 +1,32 @@
+{
+  "name": "serverless-eventhub",
+  "version": "1.0.0",
+  "description": "A Serverless Framework powered Event Ticketing API with CI/CD, DynamoDB, AWS Lambda, and Api Gateway",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jumborich/serverless-eventhub.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jumborich/serverless-eventhub/issues"
+  },
+  "homepage": "https://github.com/jumborich/serverless-eventhub#readme",
+  "devDependencies": {
+    "esbuild": "0.25.4",
+    "jest": "29.7.0",
+    "serverless": "4.14.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "3.808.0",
+    "@aws-sdk/lib-dynamodb": "^3.808.0"
+  }
+}

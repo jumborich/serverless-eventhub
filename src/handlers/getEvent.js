@@ -1,0 +1,1 @@
+// Handling GET requests to fetch event details
