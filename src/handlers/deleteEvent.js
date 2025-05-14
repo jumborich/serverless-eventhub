@@ -1,0 +1,1 @@
+// handler for deleting an event
