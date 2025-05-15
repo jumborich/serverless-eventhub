@@ -1,6 +1,6 @@
 service: serverless-eventhub
 
-frameworkVersion: '^3.0.0'
+frameworkVersion: "^3.0.0"
 
 provider:
   name: aws
@@ -12,14 +12,22 @@ provider:
   environment:
     STAGE: ${self:provider.stage}
     EventsTableName: ${self:service}-${self:provider.stage}-events
-      
+
   apiGateway:
     apiKeys:
       - ${self:service}-${self:provider.stage}-api-key
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "dynamodb:*"
+          Resource:
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.EventsTableName}"
 
 package:
   individually: true
-  
+
 plugins:
   - serverless-esbuild
 
