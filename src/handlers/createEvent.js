@@ -26,6 +26,8 @@ exports.handler = async (event) => {
       ticketPrice: Number(body.ticketPrice),
       availableTickets: Number(body.availableTickets),
       expiresAt: getEventTTL(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     });
 
     console.log("Event Created:", result);
