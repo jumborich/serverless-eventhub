@@ -1,5 +1,5 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, PutCommand, GetCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, PutCommand, GetCommand, ScanCommand } = require("@aws-sdk/lib-dynamodb");
 
 const client = new DynamoDBClient({ region: process.env.AWS_REGION || 'us-east-1' });
 const docClient = DynamoDBDocumentClient.from(client);
@@ -32,5 +32,20 @@ exports.getEventById = async (eventId) => {
   } catch (error) {
     console.error("DynamoDB GetCommand Error:", error);
     throw new Error("Could not retrieve event");
+  }
+}
+
+/** Queries the DB for available events */
+exports.listEvents = async () => {
+  const params = {
+    TableName: process.env.EventsTableName,
+  };
+
+  try {
+    const result = await docClient.send(new ScanCommand(params));
+    return result.Items || []; // Return an empty array if no items found
+  } catch (error) {
+    console.error("DynamoDB ScanCommand Error:", error);
+    throw new Error("Could not list events");
   }
 }

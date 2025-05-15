@@ -1,16 +1,18 @@
-// Handler for showing all events
-module.exports.handler = async (event) => {
-	try {
-		console.log('Received event:', JSON.stringify(event, null, 2));
-		return {
-			statusCode: 200,
-			body: "Success!",
-		};
-	} catch (error) {
-		console.error('Error getting events:', error);
-		return {
-			statusCode: 500,
-			body: "Server error while getting events.",
-		};
-	}
-}
+const { listEvents } = require("../services/dynamoService");
+const { sendFinalResponse } = require("../services/utils");
+
+exports.handler = async () => {
+  try {
+    const events = await listEvents();
+    return sendFinalResponse({
+      statusCode: 200,
+      body: JSON.stringify({ events }),
+    });
+  } catch (error) {
+    console.error("Handler Error:", error);
+    return sendFinalResponse({
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message }),
+    });
+  }
+};
