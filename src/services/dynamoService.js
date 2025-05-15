@@ -38,7 +38,7 @@ exports.getEventById = async (eventId) => {
 /** Queries the DB for available events */
 exports.listEvents = async () => {
   const params = {
-    TableName: process.env.TABLE_NAME,
+    TableName: process.env.EventsTableName,
   };
 
   try {
