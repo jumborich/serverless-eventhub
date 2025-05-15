@@ -33,7 +33,7 @@ jobs:
           aws-region: ${{ vars.DEV_DEFAULT_REGION }}
 
       - name: Deploy to Development
-        run: npx serverless deploy --stage dev --conceal # Hide sensitive information in GH Actionslogs
+        run: npx serverless deploy --stage dev --conceal  --verbose # Hide sensitive information in GH Actionslogs
 
   MAIN:
     name: Deploy to Production

@@ -9,8 +9,8 @@ provider:
   stage: ${opt:stage, 'dev'}
   environment:
     STAGE: ${self:provider.stage}
-    DynamoDB:
-      EventsTableName: ${self:service}-${self:provider.stage}-events
+    EventsTableName: ${self:service}-${self:provider.stage}-events
+      
 
   apiGateway:
     apiKeys:
@@ -74,7 +74,7 @@ resources:
     EventsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:provider.environment.DynamoDB.EventsTableName}
+        TableName: ${self:provider.environment.EventsTableName}
         BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - AttributeName: eventId
