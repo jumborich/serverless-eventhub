@@ -23,7 +23,8 @@
   "devDependencies": {
     "esbuild": "0.25.4",
     "jest": "29.7.0",
-    "serverless": "4.14.3"
+    "serverless": "4.14.3",
+    "serverless-esbuild": "^1.55.0"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "3.808.0",
