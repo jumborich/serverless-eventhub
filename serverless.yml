@@ -1,0 +1,91 @@
+service: serverless-eventhub
+
+frameworkVersion: '^3.0.0'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  memorySize: 512
+  timeout: 30 # Lambda timeout in seconds
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  environment:
+    STAGE: ${self:provider.stage}
+    EventsTableName: ${self:service}-${self:provider.stage}-events
+      
+  apiGateway:
+    apiKeys:
+      - ${self:service}-${self:provider.stage}-api-key
+
+package:
+  individually: true
+  
+plugins:
+  - serverless-esbuild
+
+custom:
+  esbuild:
+    bundle: true
+    minify: true
+    sourcemap: false
+    target: node18
+    platform: node
+    concurrency: 10
+
+functions:
+  createEvent:
+    handler: src/handlers/createEvent.handler
+    events:
+      - http:
+          path: events
+          method: post
+          private: true
+
+  getEvent:
+    handler: src/handlers/getEvent.handler
+    events:
+      - http:
+          path: events/{eventId}
+          method: get
+          private: true
+
+  updateEvent:
+    handler: src/handlers/updateEvent.handler
+    events:
+      - http:
+          path: events/{eventId}
+          method: put
+          private: true
+
+  deleteEvent:
+    handler: src/handlers/deleteEvent.handler
+    events:
+      - http:
+          path: events/{eventId}
+          method: delete
+          private: true
+
+  listEvents:
+    handler: src/handlers/listEvents.handler
+    events:
+      - http:
+          path: events
+          method: get
+          private: true
+
+resources:
+  Resources:
+    EventsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.EventsTableName}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: eventId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: eventId
+            KeyType: HASH
+        TimeToLiveSpecification:
+          AttributeName: expiresAt
+          Enabled: true
