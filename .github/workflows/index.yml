@@ -3,9 +3,11 @@ name: Serverless-Eventhub Infrastructure Deployment
 on:
   push:
     branches:
-      - main
-      - dev
+    #   - main
+    #   - dev
       - feature/*
+      
+  workflow_dispatch: # Ensures manual trigger for dev and main branches
 
 jobs:
   DEV:
