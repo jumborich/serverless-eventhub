@@ -21,3 +21,29 @@ exports.validateEventInput = (data) => {
 
   return { valid: true };
 }
+
+// Allowed update fields
+const allowedUpdateFields = [
+  "name",
+  "date",
+  "location",
+  "ticketPrice",
+  "availableTickets",
+  "expiresAt"
+];
+
+// Cherry-pick only allowed fields from the input data
+// and add backend-controlled updatedAt timestamp
+exports.getFieldsToUpdate = (data) => {
+  const updateFields = {
+    updatedAt: new Date().toISOString()
+  };
+
+  allowedUpdateFields.forEach((field) => { 
+    if((data[field])){
+      updateFields[field] = data[field];
+    }
+  });
+
+  return updateFields
+}
