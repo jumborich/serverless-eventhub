@@ -1,5 +1,5 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, PutCommand, GetCommand, ScanCommand, UpdateCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, PutCommand, GetCommand, ScanCommand, UpdateCommand, DeleteCommand } = require("@aws-sdk/lib-dynamodb");
 
 const client = new DynamoDBClient({ region: process.env.AWS_REGION || 'us-east-1' });
 const docClient = DynamoDBDocumentClient.from(client);
@@ -80,5 +80,24 @@ exports.updateEventById = async (eventId, updateData) => {
     }
     console.error("DynamoDB UpdateCommand Error:", error);
     throw new Error("Could not update event");
+  }
+}
+
+exports.deleteEventById = async (eventId) => {
+  const params = {
+    TableName: process.env.TABLE_NAME,
+    Key: { eventId },
+    ConditionExpression: "attribute_exists(eventId)", // Prevent delete if item doesn't exist
+  };
+
+  try {
+    await docClient.send(new DeleteCommand(params));
+    return true;
+  } catch (error) {
+    if (error.name === "ConditionalCheckFailedException") {
+      return false; // Item does not exist
+    }
+    console.error("DynamoDB DeleteCommand Error:", error);
+    throw new Error("Could not delete event");
   }
 }
