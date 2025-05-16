@@ -17,7 +17,7 @@ jest.mock("@aws-sdk/lib-dynamodb", () => {
             return { Attributes: { eventId: "11111" } };
           }
 
-          return { Attributes: null };  
+          return null;
         }),
       })),
     },

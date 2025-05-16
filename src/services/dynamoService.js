@@ -68,12 +68,16 @@ exports.updateEventById = async (eventId, updateData) => {
     ExpressionAttributeNames: expressionAttributeNames,
     ExpressionAttributeValues: expressionAttributeValues,
     ReturnValues: "ALL_NEW",
+    ConditionExpression: "attribute_exists(eventId)"  // Ensures item exists
   };
 
   try {
     const result = await docClient.send(new UpdateCommand(params));
-    return result.Attributes
+    return result?.Attributes;
   } catch (error) {
+    if (error.name === 'ConditionalCheckFailedException') {
+      return null;
+    }
     console.error("DynamoDB UpdateCommand Error:", error);
     throw new Error("Could not update event");
   }
