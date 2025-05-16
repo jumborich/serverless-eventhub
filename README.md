@@ -169,7 +169,7 @@ A Serverless Framework powered Event Ticketing API with CI/CD, DynamoDB, AWS Lam
 }
 ```
 
-## AWS Region : us-east-2
+## AWS Region : us-east-1
 
 ## Deployment Process
 
