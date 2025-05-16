@@ -1,5 +1,5 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, PutCommand, GetCommand, ScanCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, PutCommand, GetCommand, ScanCommand, UpdateCommand } = require("@aws-sdk/lib-dynamodb");
 
 const client = new DynamoDBClient({ region: process.env.AWS_REGION || 'us-east-1' });
 const docClient = DynamoDBDocumentClient.from(client);
@@ -47,5 +47,34 @@ exports.listEvents = async () => {
   } catch (error) {
     console.error("DynamoDB ScanCommand Error:", error);
     throw new Error("Could not list events");
+  }
+}
+
+exports.updateEventById = async (eventId, updateData) => {
+  const updateExpressions = [];
+  const expressionAttributeNames = {};
+  const expressionAttributeValues = {};
+
+  for (const [key, value] of Object.entries(updateData)) {
+    updateExpressions.push(`#${key} = :${key}`);
+    expressionAttributeNames[`#${key}`] = key;
+    expressionAttributeValues[`:${key}`] = value;
+  }
+
+  const params = {
+    TableName: process.env.EventsTableName,
+    Key: { eventId },
+    UpdateExpression: `SET ${updateExpressions.join(', ')}`,
+    ExpressionAttributeNames: expressionAttributeNames,
+    ExpressionAttributeValues: expressionAttributeValues,
+    ReturnValues: "ALL_NEW",
+  };
+
+  try {
+    const result = await docClient.send(new UpdateCommand(params));
+    return result.Attributes
+  } catch (error) {
+    console.error("DynamoDB UpdateCommand Error:", error);
+    throw new Error("Could not update event");
   }
 }
