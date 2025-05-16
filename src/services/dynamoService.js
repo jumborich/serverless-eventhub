@@ -85,7 +85,7 @@ exports.updateEventById = async (eventId, updateData) => {
 
 exports.deleteEventById = async (eventId) => {
   const params = {
-    TableName: process.env.TABLE_NAME,
+    TableName: process.env.EventsTableName,
     Key: { eventId },
     ConditionExpression: "attribute_exists(eventId)", // Prevent delete if item doesn't exist
   };
