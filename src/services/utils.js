@@ -7,6 +7,7 @@ exports.getEventTTL = () => {
   return expiresAt;
 }
 
+// A wrapper function to log and return the final response
 exports.sendFinalResponse = (responseObject) => {
   console.log("Lambda Final Response:", JSON.stringify(responseObject));
   return responseObject;

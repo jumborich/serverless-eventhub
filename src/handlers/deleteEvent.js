@@ -1,17 +1,35 @@
-// handler for deleting an event
+const { deleteEventById } = require("../services/dynamoService");
+const { sendFinalResponse } = require("../services/utils");
 
-module.exports.handler = async (event) => {
-	try {
-		console.log('Received event:', JSON.stringify(event, null, 2));
-		return {
-			statusCode: 200,
-			body: "Success! Event deleted.",
-		};
-	} catch (error) {
-		console.error('Error deleting event:', error);
-		return {
-			statusCode: 500,
-			body: "Server error while deleting event.",
-		};
-	}
-}
+exports.handler = async (event) => {
+  try {
+    const eventId = event.pathParameters?.eventId;
+
+    if (!eventId) {
+      return sendFinalResponse({
+        statusCode: 400,
+        body: JSON.stringify({ error: "Missing eventId in path parameters" }),
+      });
+    }
+
+    const wasDeleted = await deleteEventById(eventId);
+
+    if (!wasDeleted) {
+      return sendFinalResponse({
+        statusCode: 404,
+        body: JSON.stringify({ error: "Event not found" }),
+      });
+    }
+
+    return sendFinalResponse({
+      statusCode: 204, // No Content
+      body: null,
+    });
+  } catch (error) {
+    console.error("Handler Error:", error);
+    return sendFinalResponse({
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message }),
+    });
+  }
+};
